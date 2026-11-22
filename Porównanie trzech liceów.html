@@ -1,0 +1,240 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Porównanie trzech liceów</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Archivo:wght@400;500;700;800&family=Archivo+Narrow:wght@500;700&display=swap" rel="stylesheet">
+<style>
+/* VOICE: spokojny, rzeczowy przewodnik dla rodzica – wnioski najpierw, liczby pod spodem
+   IDEA: schemat linii komunikacji miejskiej – trzy szkoły jak trzy przystanki końcowe
+   PICTURE: mapa-schemat dojazdu z Ursusa do trzech szkół, z czasami i liniami
+   COLOUR and TYPE: biel, warszawska czerwień i żółć; każda szkoła ma swój kolor linii; Archivo + Archivo Narrow
+   LAYOUT: pasy na całą szerokość: dojazd → wyniki matur → klasy i progi → plusy/minusy → źródła */
+:root{color-scheme:light dark;
+--bg:light-dark(#ffffff,#121416);--ink:light-dark(#16181b,#eef0f2);--mut:light-dark(#5b6168,#a3a9b0);
+--line:light-dark(#e4e6e9,#2a2e33);--panel:light-dark(#f4f5f6,#1b1e22);
+--red:#d71920;--yel:#f2b705;
+--s1:light-dark(#0b7a8a,#3fc1d2);--s2:light-dark(#c8161d,#ff5a5f);--s3:light-dark(#b07d00,#f2b705);
+--good:light-dark(#1a7f3c,#56d17f);--bad:light-dark(#b3261e,#ff7b72)}
+:root[data-theme=light]{color-scheme:light}:root[data-theme=dark]{color-scheme:dark}
+*{box-sizing:border-box;min-width:0}
+body{margin:0;background:var(--bg);color:var(--ink);font:16px/1.55 Archivo,system-ui,sans-serif;overflow-x:clip}
+.band{padding:clamp(28px,4vw,64px) max(5vw,16px)}
+.wrap{max-width:1240px;margin:0 auto}
+h1,h2,h3{font-family:"Archivo Narrow",Archivo,sans-serif;line-height:1.05;text-wrap:balance;margin:0}
+h1{font-size:clamp(32px,5vw,50px);font-weight:700}
+h2{font-size:clamp(26px,3.4vw,36px);margin-bottom:10px}
+h3{font-size:21px}
+p{margin:.4em 0;max-width:70ch}
+.mut{color:var(--mut)}.small{font-size:14px}
+.top{border-top:10px solid var(--red);position:relative}
+.top::after{content:"";position:absolute;top:-10px;left:0;width:33%;height:10px;background:var(--yel)}
+.lead{font-size:17px;margin-top:14px}
+.hero{display:grid;grid-template-columns:minmax(0,5fr) minmax(0,7fr);gap:clamp(20px,3vw,40px);align-items:center;margin-top:26px}
+.fig{position:relative;min-height:340px}.fig>svg{position:absolute;inset:0;width:100%;height:100%}
+.keys{display:grid;gap:12px}
+.key{display:grid;grid-template-columns:14px minmax(0,1fr) auto;gap:12px;align-items:center;padding:14px 16px;background:var(--panel);border-radius:10px}
+.key i{width:14px;height:100%;min-height:44px;border-radius:7px}
+.key b{display:block;font-size:17px}
+.key .t{font:700 26px "Archivo Narrow";white-space:nowrap;text-align:right}
+.key .t small{display:block;font:500 13px Archivo;color:var(--mut)}
+.alt{background:var(--panel)}
+.legend{display:flex;flex-wrap:wrap;gap:8px 18px;margin:12px 0 18px;font-size:15px}
+.legend span{display:inline-flex;align-items:center;gap:7px}
+.legend i{width:14px;height:14px;border-radius:3px;display:inline-block}
+.subj{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:14px 40px}
+.sg h4{margin:10px 0 6px;font-size:16px}
+.sg h4 small{font-weight:400;color:var(--mut)}
+.row{display:grid;grid-template-columns:92px minmax(0,1fr) 58px;gap:8px;align-items:center;font-size:14px;margin:3px 0}
+.bar{height:16px;background:var(--line);border-radius:4px;overflow:hidden}
+.bar span{display:block;height:100%;border-radius:4px;transition:width .8s ease}
+.row .v{text-align:right;font-weight:700;white-space:nowrap}
+.row .n{color:var(--mut);font-weight:400;font-size:13px}
+.note{border-left:4px solid var(--yel);padding:8px 14px;background:var(--bg);margin-top:20px;font-size:15px;max-width:none}
+.filters{display:flex;flex-wrap:wrap;gap:8px;margin:16px 0}
+.filters button{font:500 15px Archivo;min-height:44px;padding:0 16px;border-radius:22px;border:1.5px solid var(--line);background:var(--bg);color:var(--ink);cursor:pointer}
+.filters button[aria-pressed=true]{background:var(--ink);color:var(--bg);border-color:var(--ink)}
+.filters button:focus-visible{outline:3px solid var(--yel);outline-offset:2px}
+table{width:100%;border-collapse:collapse;font-size:15px}
+th{text-align:left;font-weight:700;padding:10px 8px;border-bottom:2px solid var(--ink);font-size:14px}
+td{padding:10px 8px;border-bottom:1px solid var(--line);vertical-align:middle}
+td.num{text-align:right;font-weight:700;white-space:nowrap}
+.tag{display:inline-block;font-size:13px;padding:2px 8px;border-radius:10px;background:var(--line);margin:2px 4px 2px 0;white-space:nowrap}
+.tag.es{background:var(--yel);color:#16181b;font-weight:700}
+.dot{display:inline-block;width:10px;height:10px;border-radius:50%;margin-right:6px}
+.pbar{height:8px;background:var(--line);border-radius:4px;margin-top:5px;min-width:60px}
+.pbar span{display:block;height:100%;border-radius:4px}
+.cards{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:18px;margin-top:18px}
+.card{border:1.5px solid var(--line);border-radius:12px;padding:18px;background:var(--bg);display:flex;flex-direction:column;gap:6px}
+.card header{border-bottom:4px solid;padding-bottom:10px;margin-bottom:6px}
+.card header p{margin:4px 0 0;font-size:14px;color:var(--mut)}
+.card ul{margin:4px 0 10px;padding-left:0;list-style:none}
+.card li{padding:5px 0 5px 26px;position:relative;font-size:15px}
+.card li::before{position:absolute;left:0;top:4px;font-weight:800;font-size:17px}
+.pl li::before{content:"+";color:var(--good)}.mi li::before{content:"–";color:var(--bad)}
+.card h4{margin:6px 0 0;font-size:15px}
+.verdict{margin-top:auto;background:var(--panel);border-radius:8px;padding:10px 12px;font-size:15px}
+.commute{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:18px;margin-top:14px}
+.commute div{padding-top:10px;border-top:4px solid}
+.commute ol{margin:6px 0 0;padding-left:20px;font-size:15px}
+.src a{color:inherit}
+@media(max-width:900px){.cards,.commute{grid-template-columns:minmax(0,1fr)}.subj{grid-template-columns:minmax(0,1fr)}}
+@media(max-width:760px){.hero{grid-template-columns:minmax(0,1fr)}}
+@media(max-width:600px){table{font-size:13px}.stack thead{display:none}.stack tr{display:grid;padding-block:10px;border-bottom:1px solid var(--line)}.stack td{display:flow-root;border:0;padding:3px 0;padding-inline-start:8em;text-align:start}.stack td::before{content:attr(data-l);float:inline-start;width:7.5em;margin-inline-start:-8em;white-space:normal;color:var(--mut);font-weight:400}.stack td:empty{display:none}.row{grid-template-columns:70px minmax(0,1fr) 52px}}
+@media(prefers-reduced-motion:reduce){.bar span{transition:none}}
+</style>
+<script>new MutationObserver(()=>{for(const c of document.querySelectorAll('.stack td:not([data-l])')){let i=0,p=c;while(p=p.previousElementSibling)i+=p.colSpan;c.dataset.l=c.closest('table').rows[0].cells[i]?.textContent||''}}).observe(document,{childList:true,subtree:true})</script>
+</head>
+<body>
+
+<section class="band top"><div class="wrap">
+  <h1>Curie ma najlepsze wyniki, Solipska jest najbliżej, Sienkiewicz jest pośrodku</h1>
+  <p class="lead">Porównanie trzech warszawskich liceów pod kątem zainteresowań brata: klasy z <b>geografią</b> albo <b>informatyką</b>, najlepiej z <b>hiszpańskim</b>. Poniżej: dojazd, wyniki matur 2026, klasy z progami punktowymi oraz plusy i minusy każdej szkoły.</p>
+  <div class="hero">
+    <div class="keys" id="keys"></div>
+    <div class="fig"><svg id="map" role="img" aria-label="Schemat dojazdu z Ursusa do trzech szkół"></svg></div>
+  </div>
+</div></section>
+
+<section class="band alt"><div class="wrap">
+  <h2>Wyniki matur 2026: Curie wyraźnie prowadzi, Sienkiewicz najlepszy z geografii</h2>
+  <p class="mut">Średni wynik szkoły w procentach. Przy rozszerzeniach w nawiasie liczba zdających – im mniej osób, tym mniej miarodajny wynik.</p>
+  <div class="legend" id="legend"></div>
+  <div class="subj" id="matury"></div>
+  <p class="note"><b>Na co zwrócić uwagę:</b> w Curie <b>każda</b> klasa ma rozszerzoną matematykę, więc na rozszerzenie z matmy idzie tam aż 138 osób i średnia i tak wynosi 70%. W Solipskiej i u Sienkiewicza średnia z matmy rozszerzonej to ok. 44–45%. Informatykę u Sienkiewicza zdawały tylko 3 osoby, więc nie ma podanej średniej.</p>
+</div></section>
+
+<section class="band"><div class="wrap">
+  <h2>Klasy z geografią lub informatyką i progi punktowe</h2>
+  <p class="mut">Progi z rekrutacji 2026/2027 (ostatni przyjęty uczeń, maks. 200 pkt). Oferta na rok brata (2027/2028) pojawi się wiosną – profile zwykle są podobne, ale progi co roku się zmieniają o kilka punktów.</p>
+  <div class="filters" role="group" aria-label="Filtr klas">
+    <button id="f-all" aria-pressed="true" data-f="all">Wszystkie</button>
+    <button id="f-geo" aria-pressed="false" data-f="geo">Geografia</button>
+    <button id="f-inf" aria-pressed="false" data-f="inf">Informatyka</button>
+    <button id="f-es" aria-pressed="false" data-f="es">Tylko z hiszpańskim</button>
+  </div>
+  <table class="stack" id="klasy">
+    <thead><tr><th>Szkoła</th><th>Klasa</th><th>Rozszerzenia</th><th>Języki</th><th style="text-align:right">Próg</th></tr></thead>
+    <tbody></tbody>
+  </table>
+  <p class="note"><b>Hiszpański:</b> w Curie hiszpański jest do wyboru w każdej klasie, a w 1B jest nawet rozszerzony (mat-geo-hiszp). W Solipskiej klasy są dzielone na grupy – hiszpański ma tylko jedna grupa każdej klasy (druga ma niemiecki). U Sienkiewicza hiszpański jest w klasie geograficznej, ale <b>nie ma go w klasach informatycznych</b>.</p>
+</div></section>
+
+<section class="band alt"><div class="wrap">
+  <h2>Dojazd: Solipska to jeden autobus, pozostałe wymagają przesiadki</h2>
+  <div class="commute" id="commute"></div>
+</div></section>
+
+<section class="band"><div class="wrap">
+  <h2>Plusy i minusy</h2>
+  <div class="cards" id="cards"></div>
+</div></section>
+
+<section class="band alt src"><div class="wrap">
+  <h3>Skąd są dane</h3>
+  <p class="small mut">Wyniki matur 2026, progi punktowe i oferta klas 2026/2027: serwis <a href="https://www.otouczelnie.pl/wyniki/matura/licea/mazowieckie/Warszawa">otouczelnie.pl</a> (dane z OKE Warszawa). Miejsce w rankingu: <a href="https://www.otouczelnie.pl/ranking/203/Ranking-liceow-w-Warszawie-2026">ranking liceów w Warszawie 2026</a>. Czasy dojazdu podane przez rodzinę. Przed złożeniem wniosku warto sprawdzić ofertę na stronach szkół: <a href="https://solipska.edupage.org">solipska.edupage.org</a>, <a href="https://lo157.waw.pl">lo157.waw.pl</a>, <a href="https://12lo-warszawa.edupage.org">12lo-warszawa.edupage.org</a> oraz w systemie rekrutacji <a href="https://warszawa.edu.com.pl">warszawa.edu.com.pl</a>.</p>
+  <p class="small mut">Uwaga: dla klasy 1E u Sienkiewicza (mat-inf-ang) serwis podaje sprzecznie rozszerzenia (fizyka zamiast informatyki) – warto to potwierdzić w szkole.</p>
+</div></section>
+
+<script>
+{
+const S={
+ a:{name:"CLIX LO im. Jana III Sobieskiego",short:"Sobieski (Solipska)",addr:"ul. Solipska 17/19, Włochy",c:"var(--s1)",time:"25–30",rank:64,n:230},
+ b:{name:"CLVII LO im. Marii Skłodowskiej-Curie",short:"Curie (Świętokrzyska)",addr:"ul. Świętokrzyska 18A, Śródmieście",c:"var(--s2)",time:"35–40",rank:19,n:165},
+ c:{name:"XII LO im. Henryka Sienkiewicza",short:"Sienkiewicz (Sienna)",addr:"ul. Sienna 53, Wola/centrum",c:"var(--s3)",time:"30–40",rank:24,n:149}
+};
+const K=["a","b","c"];
+document.getElementById('keys').innerHTML=K.map(k=>`<div class="key"><i style="background:${S[k].c}"></i><div><b>${S[k].short}</b><span class="small mut">${S[k].addr} · ${S[k].rank}. miejsce w rankingu Warszawy</span></div><div class="t">${S[k].time}<small>min dojazdu</small></div></div>`).join('');
+document.getElementById('legend').innerHTML=K.map(k=>`<span><i style="background:${S[k].c}"></i>${S[k].short}</span>`).join('');
+
+/* matury 2026: [wynik%, liczba zdających] */
+const M=[
+ {g:"Podstawa",s:"Matematyka",v:{a:[79.1,230],b:[93.5,165],c:[82.8,149]}},
+ {g:"Podstawa",s:"Polski",v:{a:[63.5,230],b:[77.7,165],c:[72.5,149]}},
+ {g:"Podstawa",s:"Angielski",v:{a:[92.2,226],b:[96.4,153],c:[95.7,147]}},
+ {g:"Rozszerzenie",s:"Matematyka",v:{a:[44.9,123],b:[70.1,138],c:[44.1,84]}},
+ {g:"Rozszerzenie",s:"Angielski",v:{a:[86.2,211],b:[91.1,139],c:[88.8,121]}},
+ {g:"Rozszerzenie",s:"Geografia",v:{a:[55.8,57],b:[72.4,56],c:[73.5,69]}},
+ {g:"Rozszerzenie",s:"Informatyka",v:{a:[39.9,18],b:[54.7,15],c:[null,3]}},
+ {g:"Rozszerzenie",s:"Fizyka",v:{a:[44.9,38],b:[65.4,39],c:[53.2,14]}}
+];
+const row=(k,x,ext)=>`<div class="row"><span>${S[k].short.split(' ')[0]}</span><div class="bar"><span data-w="${x[0]??0}" style="width:0;background:${S[k].c}"></span></div><span class="v">${x[0]==null?'<span class="n">brak</span>':x[0].toFixed(1).replace('.',',')+'%'}${ext?`<br><span class="n">(${x[1]} os.)</span>`:''}</span></div>`;
+const grp=g=>M.filter(m=>m.g===g).map(m=>`<div class="sg"><h4>${m.s} <small>${g.toLowerCase()}</small></h4>${K.map(k=>row(k,m.v[k],g==="Rozszerzenie")).join('')}</div>`).join('');
+document.getElementById('matury').innerHTML=`<div>${grp("Podstawa")}<p class="small mut" style="margin-top:14px">Zdawalność matury: 100% we wszystkich trzech szkołach. Liczba maturzystów: Solipska 230, Curie 165, Sienkiewicz 149.</p></div><div>${grp("Rozszerzenie")}</div>`;
+requestAnimationFrame(()=>setTimeout(()=>document.querySelectorAll('.bar span').forEach(e=>e.style.width=e.dataset.w+'%'),60));
+
+/* klasy 2026/27 */
+const C=[
+ ["a","1B gr. 1","mat-geo-ang","geo",["matematyka","geografia","angielski"],["angielski","hiszpański"],168.25],
+ ["a","1B gr. 2","mat-geo-ang","geo",["matematyka","geografia","angielski"],["angielski","niemiecki"],163.35],
+ ["a","1E gr. 2","mat-geo-biz","geo",["matematyka","geografia","biznes i zarządzanie"],["angielski","hiszpański"],161.90],
+ ["a","1E gr. 1","mat-geo-biz","geo",["matematyka","geografia","biznes i zarządzanie"],["angielski","niemiecki"],157.70],
+ ["a","1A gr. 1","mat-fiz-inf","inf",["matematyka","fizyka","informatyka"],["angielski","hiszpański"],162.20],
+ ["a","1A gr. 2","mat-fiz-inf","inf",["matematyka","fizyka","informatyka"],["angielski","niemiecki"],161.30],
+ ["a","1F gr. 1","mat-inf-ang","inf",["matematyka","informatyka","angielski"],["angielski","hiszpański"],160.50],
+ ["a","1F gr. 2","mat-inf-ang","inf",["matematyka","informatyka","angielski"],["angielski","niemiecki"],157.30],
+ ["b","1B","mat-geo-hiszp","geo",["matematyka","geografia","hiszpański"],["angielski","hiszpański"],168.75],
+ ["b","1G","mat-geo-biz","geo",["matematyka","geografia","biznes i zarządzanie"],["angielski","niemiecki / hiszpański"],170.70],
+ ["b","1C","mat-inf-ang","inf",["matematyka","informatyka","angielski"],["angielski","niemiecki / hiszpański"],168.20],
+ ["c","1B","mat-geo-ang","geo",["matematyka","geografia","angielski"],["angielski","niemiecki / hiszpański"],160.05],
+ ["c","1A","mat-fiz-inf","inf",["matematyka","fizyka","informatyka"],["angielski","niemiecki / francuski"],162.95],
+ ["c","1E","mat-inf-ang","inf",["matematyka","informatyka","angielski"],["angielski","francuski / rosyjski"],160.60]
+];
+const tb=document.querySelector('#klasy tbody');
+const draw=f=>{
+ const rows=C.filter(r=>f==="all"||(f==="es"?r[5].some(l=>l.includes("hiszp")):r[3]===f));
+ tb.innerHTML=rows.length?rows.map(r=>`<tr><td><span class="dot" style="background:${S[r[0]].c}"></span>${S[r[0]].short}</td><td><b>${r[1]}</b> <span class="mut">${r[2]}</span></td><td>${r[4].map(x=>`<span class="tag${x==="hiszpański"?" es":""}">${x}</span>`).join('')}</td><td>${r[5].map(x=>`<span class="tag${x.includes("hiszp")?" es":""}">${x}</span>`).join('')}</td><td class="num">${r[6].toFixed(2).replace('.',',')}<div class="pbar"><span style="width:${(r[6]-140)/40*100}%;background:${S[r[0]].c}"></span></div></td></tr>`).join(''):`<tr><td colspan="5" class="mut">Brak klas dla tego filtra.</td></tr>`;
+};
+document.querySelectorAll('.filters button').forEach(b=>b.addEventListener('click',()=>{
+ document.querySelectorAll('.filters button').forEach(x=>x.setAttribute('aria-pressed',x===b));
+ draw(b.dataset.f);try{localStorage.setItem('szk-f',b.dataset.f)}catch(e){}
+}));
+let f0="all";try{f0=localStorage.getItem('szk-f')||"all"}catch(e){}
+document.querySelector(`.filters [data-f="${f0}"]`)?.click()||draw("all");
+
+/* dojazd */
+const D={
+ a:{t:"ok. 25–30 min",w:["Autobus 187 prosto pod szkołę na Solipskiej"],x:"Bez przesiadek – najprostsza i najkrótsza droga."},
+ b:{t:"ok. 35–40 min",w:["Wariant 1: autobus 194 → metro → stacja Świętokrzyska → 2 min pieszo","Wariant 2: autobus 194 lub 187 → PKP Ursus-Niedźwiadek → pociąg KM lub SKM do centrum → ok. 8 min pieszo"],x:"Zawsze z przesiadką, ale metro i kolej są niezależne od korków."},
+ c:{t:"ok. 30–40 min",w:["Wariant 1: autobus 194 lub 187 → PKP Ursus-Niedźwiadek → pociąg do centrum → pieszo","Wariant 2: autobus 157 ze Śmigielskiej prawie pod szkołę"],x:"Jest wariant jednym autobusem (157), ale przez miasto może stać w korkach."}
+};
+document.getElementById('commute').innerHTML=K.map(k=>`<div style="border-color:${S[k].c}"><h3>${S[k].short}</h3><p><b>${D[k].t}</b></p><ol>${D[k].w.map(x=>`<li>${x}</li>`).join('')}</ol><p class="small mut">${D[k].x}</p></div>`).join('');
+
+/* plusy i minusy */
+const P={
+ a:{p:["Najbliżej: jeden autobus (187), 25–30 min, bez przesiadek","Najniższe progi (ok. 157–168 pkt) – najłatwiej się dostać","Największy wybór: aż 8 grup z geografią lub informatyką","Hiszpański dostępny w klasach geograficznych i informatycznych (w jednej grupie każdej klasy)"],
+    m:["Najsłabsze wyniki matur z tych trzech (np. polski 63,5%, informatyka 39,9%)","64. miejsce w rankingu – szkoła średnia, nie czołówka","Duża szkoła (ok. 230 maturzystów rocznie) – mniej kameralnie","Trzeba trafić do właściwej grupy, bo druga grupa ma niemiecki zamiast hiszpańskiego"],
+    v:"Dobry wybór, jeśli liczy się wygoda dojazdu i pewność dostania się."},
+ b:{p:["Zdecydowanie najlepsze wyniki matur (mat. rozszerzona 70%, geografia 72%, informatyka 55%)","19. miejsce w rankingu Warszawy","Wyjątkowa klasa 1B mat-geo-hiszp – geografia i rozszerzony hiszpański naraz","Hiszpański do wyboru w każdej klasie, także informatycznej (1C)","Centrum miasta, dojazd metrem lub koleją – niezależny od korków"],
+    m:["Najwyższe progi (ok. 168–171 pkt w interesujących klasach) – potrzebne bardzo dobre oceny i egzamin","Najdłuższy dojazd: 35–40 min, zawsze z przesiadką","Matematyka rozszerzona w każdej klasie – szkoła wymagająca","Mniej klas do wyboru (po jednej klasie geo-hiszp, geo-biz i inf)"],
+    v:"Najlepsza szkoła, jeśli brat ma szansę na ok. 170 punktów."},
+ c:{p:["Najlepszy wynik z geografii rozszerzonej (73,5%) i mocne wyniki z podstaw","24. miejsce w rankingu – bardzo dobra szkoła","Umiarkowane progi (ok. 160–163 pkt)","Klasa 1B mat-geo-ang z hiszpańskim","Wariant dojazdu jednym autobusem (157)"],
+    m:["W klasach informatycznych nie ma hiszpańskiego","Informatykę na maturze zdają pojedyncze osoby – trudno ocenić poziom","Matematyka rozszerzona słabsza (44,1%)","Najmniejszy wybór: tylko 3 klasy z geografią lub informatyką","Dojazd 30–40 min; autobus przez centrum może stać w korkach"],
+    v:"Świetny wybór dla geografii z hiszpańskim; do informatyki słabszy."}
+};
+document.getElementById('cards').innerHTML=K.map(k=>`<article class="card"><header style="border-color:${S[k].c}"><h3>${S[k].short}</h3><p>${S[k].name}</p></header><h4>Plusy</h4><ul class="pl">${P[k].p.map(x=>`<li>${x}</li>`).join('')}</ul><h4>Minusy</h4><ul class="mi">${P[k].m.map(x=>`<li>${x}</li>`).join('')}</ul><p class="verdict"><b>W skrócie:</b> ${P[k].v}</p></article>`).join('');
+
+/* schemat dojazdu */
+const svg=document.getElementById('map');
+const drawMap=()=>{
+ const W=svg.clientWidth,H=svg.clientHeight,nar=W<520;
+ const hx=nar?40:70,hy=H/2,ex=W-(nar?24:40);
+ const ys=[H*.2,H*.5,H*.8];
+ const lab=[["Solipska","187 · bez przesiadki"],["Świętokrzyska","194 → metro / kolej"],["Sienna","157 albo kolej"]];
+ const tm=["25–30","35–40","30–40"];
+ const lines=K.map((k,i)=>{const y=ys[i],mx=hx+(ex-hx)*.32;
+  return `<path d="M${hx} ${hy} L${mx-20} ${hy} Q${mx} ${hy} ${mx} ${hy+(y>hy?20:y<hy?-20:0)} L${mx} ${y+(y>hy?-20:y<hy?20:0)} Q${mx} ${y} ${mx+20} ${y} L${ex} ${y}" fill="none" stroke="${S[k].c}" stroke-width="${nar?7:10}" stroke-linecap="round" stroke-linejoin="round"/>
+  ${i!==0?`<circle cx="${mx+(ex-mx)*.58}" cy="${y}" r="${nar?6:8}" fill="var(--bg)" stroke="${S[k].c}" stroke-width="4"/>`:''}
+  <circle cx="${ex}" cy="${y}" r="${nar?11:15}" fill="var(--bg)" stroke="${S[k].c}" stroke-width="5"/>
+  <text x="${ex-(nar?18:24)}" y="${y-(nar?14:18)}" text-anchor="end" font-family="Archivo Narrow" font-weight="700" font-size="${nar?16:20}" fill="var(--ink)">${lab[i][0]}</text>
+  ${nar?'':`<text x="${ex-24}" y="${y+34}" text-anchor="end" font-size="13" fill="var(--mut)">${lab[i][1]}</text>`}
+  <g transform="translate(${mx+(nar?14:26)},${y-(nar?13:16)})"><rect width="${nar?58:74}" height="${nar?26:32}" rx="6" fill="${S[k].c}"/><text x="${nar?29:37}" y="${nar?18:22}" text-anchor="middle" font-family="Archivo Narrow" font-weight="700" font-size="${nar?14:17}" fill="#fff">${tm[i]}′</text></g>`;}).join('');
+ svg.innerHTML=`${lines}<circle cx="${hx}" cy="${hy}" r="${nar?16:22}" fill="var(--red)"/><circle cx="${hx}" cy="${hy}" r="${nar?7:9}" fill="var(--yel)"/><text x="${hx}" y="${hy+(nar?36:46)}" text-anchor="middle" font-family="Archivo Narrow" font-weight="700" font-size="${nar?15:18}" fill="var(--ink)">Dom</text><text x="${hx}" y="${hy+(nar?52:64)}" text-anchor="middle" font-size="13" fill="var(--mut)">Ursus</text>`;
+};
+const ro=new ResizeObserver(drawMap);ro.observe(svg);
+}
+</script>
+</body>
+</html>
